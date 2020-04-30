@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Lists</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="wrapper" id="app">
+    <h2>{{title}}</h2>
+    <div>
+      <p v-if="items.length > 0">Задач в списке - {{itemsLength}}</p>
+      <p v-if="items.length == 0">Введите имя задачи в поле, затем нажмите кнопку "Добавить"</p>
+    </div>
+    <ul class="items" v-for="(item, index) in items">
+      <li>
+        <input type="checkbox" v-bind:id="'item' + index" v-bind:checked="item.done" v-model="item.done">
+        <label v-bind:for="'item' + index">{{item.note}}</label>
+      </li>
+    </ul>
+    <form class="add-items">
+      <input type="text" name="item" placeholder="Название задачи" required id="pushItem" v-model="newItem.note">
+      <input type="submit" value="Добавить" v-on:click.prevent="addToList()">
+    </form>
+    <button v-if="items.length > 0" v-on:click="removeTasks()">Убрать выполненные задачи</button>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.11/vue.js" integrity="sha256-NSuqgY2hCZJUN6hDMFfdxvkexI7+iLxXQbL540RQ/c4=" crossorigin="anonymous"></script>
+  <script>
+    var list = new Vue({
+      el: '#app',
+      data() {
+        return {
+          title: "My todo list",
+          items: [
+            {
+              note: "Очень важная задача",
+              done: false
+            },
+          ],
+          newItem: {
+            note: '',
+            done: false
+          }
+        }
+      },
+      methods: {
+        addToList: function() {
+          if (this.newItem.note != '') {
+            this.items.push({
+              note: this.newItem.note,
+              done: false
+            })
+          }
+          this.newItem.note = '';
+        },
+        removeTasks: function() {
+          this.items = this.items.filter(item => (item.done == false));
+        }
+      },
+      computed: {
+        itemsLength() {
+          return this.items.length || '';
+        },
+      }
+    });
+  </script>
+</body>
